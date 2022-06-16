@@ -1,18 +1,23 @@
-all: test vet fmt lint build
+all: test build
 
 test:
-    go test ./...
+	go test
 
 vet:
-    go vet ./...
+	go vet ./...
 
-fmt:
-    go list -f '{{.Dir}}' ./... | grep -v /vendor/ | xargs -L1 gofmt -l
-    test -z $$(go list -f '{{.Dir}}' ./... | grep -v /vendor/ | xargs -L1 gofmt -l)
+#fmt:
+	#go list -f '{{.Dir}}' ./... | grep -v /vendor/ | xargs -L1 gofmt -l
+	#test -z $$(go list -f '{{.Dir}}' ./... | grep -v /vendor/ | xargs -L1 gofmt -l)
+#
+#lint:
+#    go list ./... | grep -v /vendor/ | xargs -L1 golint -set_exit_status
 
-lint:
-    go list ./... | grep -v /vendor/ | xargs -L1 golint -set_exit_status
+hello:
+	echo "Hello"
 
 build:
-    go build -o bin/api ./cmd/api
-    go build -o bin/worker ./cmd/worker
+	go build -o main
+
+run: build
+	./main
