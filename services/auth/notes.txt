@@ -1,0 +1,8 @@
+Auth service:
+ - New User
+   -
+
+
+
+External References:
+ - https://blog.boot.dev/golang/golang-project-structure/
