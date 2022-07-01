@@ -11,8 +11,10 @@ import (
 )
 
 type server struct {
-	router *http.ServeMux
-	routes auth.Routes
+	router      *http.ServeMux
+	routes      auth.Routes
+	db          database
+	authService auth.Service
 }
 
 func newServer() (*server, error) {
@@ -21,6 +23,7 @@ func newServer() (*server, error) {
 	s := &server{
 		router: router,
 		routes: auth.NewRoutes(),
+		db:     newDatabase(),
 	}
 	s.setupRoutes()
 	return s, nil
@@ -82,20 +85,6 @@ func (s *server) handleIndex(w http.ResponseWriter, r *http.Request) {
 }
 
 func (s *server) handleNewAuthProfile(w http.ResponseWriter, r *http.Request) {
-	//w.Write([]byte("hi"))
-	//handleErr := func(err error) {
-	//
-	//}
-	//
-	//makeRespData := func(uuid string, isEmailValid bool, isPasswordValid bool) auth.NewAuthProfileResponse {
-	//	return auth.NewAuthProfileResponse{
-	//		UUID:            uuid,
-	//		IsEmailValid:    isEmailValid,
-	//		IsPasswordValid: isPasswordValid,
-	//	}
-	//}
-
-	//return func(w http.ResponseWriter, r *http.Request) {
 	s.printInfo(r)
 
 	// Get email & password from request
@@ -116,18 +105,21 @@ func (s *server) handleNewAuthProfile(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// new auth profile - i.e. new UUID for email & password
-	//uuid := newUUID()
+	uuid := newUUID()
 
 	// Hash password
-	//passwordHash := hashPassword(reqData.Password)
+	passwordHash := hashPassword(reqData.Password)
+	err = s.db.savePasswordHash(uuid, passwordHash)
+	if err != nil {
+		s.writeErrorResponse(w, err, http.StatusInternalServerError)
+		return
+	}
 
 	// save new auth profile to database
 
-	// return UUID
-	//}
-
+	// return uuid
 	respData := auth.NewAuthProfileResponse{
-		UUID:            "some UUID",
+		UUID:            uuid,
 		IsEmailValid:    true,
 		IsPasswordValid: true,
 	}

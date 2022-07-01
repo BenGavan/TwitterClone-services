@@ -19,7 +19,7 @@ func TestEmailValidation(t *testing.T) {
 
 	for _, row := range table {
 		got := isEmailValid(row.email)
-		require.Equalf(t, row.expected, got, "email: %q, expected: %v, got: %v", row.email, row.expected, got)
+		require.Equal(t, row.expected, got, "email: %q, expected: %v, got: %v", row.email, row.expected, got)
 	}
 }
 
@@ -33,7 +33,8 @@ func TestPasswordVaildation(t *testing.T) {
 	}
 
 	for _, row := range table {
-		require.Equal(t, row.expected, isPasswordValid(row.password))
+		got := isPasswordValid(row.password)
+		require.Equal(t, row.expected, got, "password: %q, expected: %v, got: %v", row.password, row.password, got)
 	}
 }
 

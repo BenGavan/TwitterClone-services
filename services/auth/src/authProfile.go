@@ -47,10 +47,21 @@ func isEmailValid(email string) bool {
 }
 
 func isPasswordValid(password string) bool {
-	if len(password) < 5 {
+	if len(password) < 8 {
 		return false
 	}
-	// TODO: Check Password composition (enough letters & numbers)
+	hasUpperCase, err := regexp.Match("[A-Z]", []byte(password))
+	haslowerCase, err := regexp.Match("[a-z]", []byte(password))
+	hasNumber, err := regexp.Match("\\d", []byte(password))
+	hasNonAlpha, err := regexp.Match("\\W", []byte(password))
+	if err != nil {
+		fmt.Printf("Error from regex: %q\n", err.Error())
+		return false
+	}
+	b2i := map[bool]int8{false: 0, true: 1}
+	if b2i[hasUpperCase] + b2i[haslowerCase] + b2i[hasNumber] + b2i[hasNonAlpha] < 3 {
+		return false
+	}
 	return true
 }
 
